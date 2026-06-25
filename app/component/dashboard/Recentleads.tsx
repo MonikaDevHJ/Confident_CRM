@@ -41,6 +41,14 @@ const leads = [
     status: "New",
     createdAt: "22 Jun 2026",
   },
+  {
+    id: 5,
+    name: "Vikram Singh",
+    phone: "9001234567",
+    email: "vikram@gmail.com",
+    status: "New",
+    createdAt: "22 Jun 2026",
+  },
 ];
 
 const getStatusStyle = (status: string) => {

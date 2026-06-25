@@ -110,7 +110,7 @@ const Overview = () => {
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+      {/* <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
         <h2 className="text-xl font-semibold mb-5">
           Quick Actions
         </h2>
@@ -126,7 +126,7 @@ const Overview = () => {
             Import Leads
           </button>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
