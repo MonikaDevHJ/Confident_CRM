@@ -1,15 +1,10 @@
-import {
-  Menu,
-  Search,
-  Bell,
-  ChevronDown,
-} from "lucide-react";
+import { Menu, Search, Bell, ChevronDown } from "lucide-react";
+import { UserButton } from "@clerk/nextjs";
 
 const Navbar = () => {
   return (
     <header className="sticky top-0 z-30 bg-white border-b border-gray-200">
       <div className="h-20 px-4 md:px-6 lg:px-8 flex items-center justify-between">
-
         {/* Left Section */}
         <div className="flex items-center gap-4">
           <button className="p-2 rounded-lg hover:bg-gray-100 transition">
@@ -19,13 +14,9 @@ const Navbar = () => {
 
         {/* Right Section */}
         <div className="flex items-center gap-3 md:gap-5">
-
           {/* Search */}
           <div className="hidden md:flex items-center w-72 lg:w-96 border border-gray-200 rounded-xl px-4 py-2.5 bg-gray-50">
-            <Search
-              size={18}
-              className="text-gray-400"
-            />
+            <Search size={18} className="text-gray-400" />
 
             <input
               type="text"
@@ -36,10 +27,7 @@ const Navbar = () => {
 
           {/* Notification */}
           <button className="relative p-2 rounded-lg hover:bg-gray-100 transition">
-            <Bell
-              size={22}
-              className="text-gray-600"
-            />
+            <Bell size={22} className="text-gray-600" />
 
             <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-medium text-white">
               3
@@ -47,7 +35,7 @@ const Navbar = () => {
           </button>
 
           {/* Profile */}
-          <button className="flex items-center gap-3 rounded-xl px-2 py-2 hover:bg-gray-100 transition">
+          {/* <button className="flex items-center gap-3 rounded-xl px-2 py-2 hover:bg-gray-100 transition">
             <img
               src="https://i.pravatar.cc/150?img=12"
               alt="profile"
@@ -68,17 +56,17 @@ const Navbar = () => {
               size={16}
               className="hidden lg:block text-gray-500"
             />
-          </button>
+          </button> */}
+          <div className="flex items-center gap-3">
+            <UserButton />
+          </div>
         </div>
       </div>
 
       {/* Mobile Search */}
       <div className="md:hidden px-4 pb-4">
         <div className="flex items-center border border-gray-200 rounded-xl px-4 py-3">
-          <Search
-            size={18}
-            className="text-gray-400"
-          />
+          <Search size={18} className="text-gray-400" />
 
           <input
             type="text"
