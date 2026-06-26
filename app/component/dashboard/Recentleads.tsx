@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Eye, Pencil } from "lucide-react";
-
+import Link from "next/link";
 const getStatusStyle = (status: string) => {
   switch (status) {
     case "New":
@@ -26,56 +26,44 @@ export default function RecentLeads() {
   const [leads, setLeads] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch("/api/leads")
-      .then((res) => res.json())
-      .then((data) => setLeads(data));
+    fetch("/api/leads").then(res => res.json()).then(data => setLeads(data));
   }, []);
 
   return (
     <div className="bg-white rounded-2xl shadow border overflow-hidden">
-
       <div className="px-6 py-5 border-b">
-        <h2 className="text-xl font-semibold">
-          Recent Leads
-        </h2>
+        <h2 className="text-xl font-semibold">Recent Leads</h2>
       </div>
 
       <div className="overflow-auto">
-
         <table className="w-full">
-
           <thead>
-
             <tr className="bg-gray-100">
-
               <th className="p-4 text-left">Name</th>
               <th className="p-4 text-left">Phone</th>
               <th className="p-4 text-left">Email</th>
               <th className="p-4 text-left">Status</th>
               <th className="p-4 text-left">Created</th>
               <th className="p-4 text-left">Action</th>
-
             </tr>
-
           </thead>
 
           <tbody>
-
-            {leads.map((lead) => (
-
-              <tr
-                key={lead.id}
-                className="border-t"
-              >
-
-                <td className="p-4">{lead.name}</td>
-
-                <td className="p-4">{lead.phone}</td>
-
-                <td className="p-4">{lead.email}</td>
+            {leads.map(lead =>
+              <tr key={lead.id} className="border-t">
+                <td className="p-4">
+                  {lead.name}
+                </td>
 
                 <td className="p-4">
+                  {lead.phone}
+                </td>
 
+                <td className="p-4">
+                  {lead.email}
+                </td>
+
+                <td className="p-4">
                   <span
                     className={`px-3 py-1 rounded-lg ${getStatusStyle(
                       lead.status
@@ -83,7 +71,6 @@ export default function RecentLeads() {
                   >
                     {lead.status}
                   </span>
-
                 </td>
 
                 <td className="p-4">
@@ -91,27 +78,19 @@ export default function RecentLeads() {
                 </td>
 
                 <td className="p-4 flex gap-3">
+                  <Eye size={18} className="cursor-pointer" />
 
-                  <Eye
-                    size={18}
-                    className="cursor-pointer"
-                  />
-
-                  <Pencil
-                    size={18}
-                    className="cursor-pointer"
-                  />
-
+                  <Link href={`/dashboard/edit-lead/${lead.id}`}>
+                    <Pencil
+                      size={18}
+                      className="cursor-pointer text-green-600"
+                    />
+                  </Link>
                 </td>
-
               </tr>
-
-            ))}
-
+            )}
           </tbody>
-
         </table>
-
       </div>
     </div>
   );
