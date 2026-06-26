@@ -1,5 +1,6 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import PageLayout from "../../component/dashboard/PageLayout";
 import Link from "next/link";
@@ -10,7 +11,6 @@ import {
   Phone,
   CheckCircle,
   Pencil,
-  Eye,
 } from "lucide-react";
 
 const Leads = () => {
@@ -24,6 +24,9 @@ const Leads = () => {
   });
 
   const [leads, setLeads] = useState<any[]>([]);
+
+  const searchParams = useSearchParams();
+  const statusFilter = searchParams.get("status");
 
   useEffect(() => {
     const fetchLeads = async () => {
@@ -44,7 +47,9 @@ const Leads = () => {
           contacted: data.filter(
             (lead: any) => lead.status === "Contacted"
           ).length,
-          closed: data.filter((lead: any) => lead.status === "Closed").length,
+          closed: data.filter(
+            (lead: any) => lead.status === "Closed"
+          ).length,
         });
       } catch (error) {
         console.log(error);
@@ -55,6 +60,11 @@ const Leads = () => {
 
     fetchLeads();
   }, []);
+
+  // Filter Leads
+  const filteredLeads = statusFilter
+    ? leads.filter((lead) => lead.status === statusFilter)
+    : leads;
 
   const cards = [
     {
@@ -107,9 +117,20 @@ const Leads = () => {
       title="Leads"
       description="Manage all your customer leads."
     >
-      {/* Add Button */}
+      {/* Top Buttons */}
 
-      <div className="flex justify-end mb-6">
+      <div className="flex justify-between items-center mb-6">
+        {statusFilter ? (
+          <Link
+            href="/dashboard/leads"
+            className="text-blue-600 hover:underline font-medium"
+          >
+            ← Show All Leads
+          </Link>
+        ) : (
+          <div></div>
+        )}
+
         <Link
           href="/dashboard/add-lead"
           className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl flex items-center gap-2"
@@ -132,7 +153,9 @@ const Leads = () => {
             >
               <div className="flex justify-between items-center">
                 <div>
-                  <p className="text-gray-500">{card.title}</p>
+                  <p className="text-gray-500">
+                    {card.title}
+                  </p>
 
                   <h1 className="text-4xl font-bold mt-2">
                     {loading ? "--" : card.value}
@@ -140,7 +163,10 @@ const Leads = () => {
                 </div>
 
                 <div className={`${card.bg} p-3 rounded-full`}>
-                  <Icon className={card.color} size={28} />
+                  <Icon
+                    className={card.color}
+                    size={28}
+                  />
                 </div>
               </div>
             </div>
@@ -151,43 +177,53 @@ const Leads = () => {
       {/* Table */}
 
       <div className="bg-white rounded-2xl shadow border overflow-hidden">
-
         <div className="px-6 py-5 border-b">
           <h2 className="text-xl font-semibold">
-            Recent Leads
+            {statusFilter
+              ? `${statusFilter} Leads`
+              : "All Leads"}
           </h2>
         </div>
 
         <div className="overflow-x-auto">
-
           <table className="w-full">
-
             <thead className="bg-gray-100">
-
               <tr>
-                <th className="p-4 text-left">Name</th>
-                <th className="p-4 text-left">Phone</th>
-                <th className="p-4 text-left">Email</th>
-                <th className="p-4 text-left">Company</th>
-                <th className="p-4 text-left">Status</th>
-                <th className="p-4 text-left">Created</th>
-                <th className="p-4 text-center">Actions</th>
+                <th className="p-4 text-left">
+                  Name
+                </th>
+                <th className="p-4 text-left">
+                  Phone
+                </th>
+                <th className="p-4 text-left">
+                  Email
+                </th>
+                <th className="p-4 text-left">
+                  Company
+                </th>
+                <th className="p-4 text-left">
+                  Status
+                </th>
+                <th className="p-4 text-left">
+                  Created
+                </th>
+                <th className="p-4 text-center">
+                  Actions
+                </th>
               </tr>
-
             </thead>
 
             <tbody>
-
               {loading ? (
-
                 <tr>
-                  <td colSpan={7} className="text-center py-12">
+                  <td
+                    colSpan={7}
+                    className="text-center py-12"
+                  >
                     Loading Leads...
                   </td>
                 </tr>
-
-              ) : leads.length === 0 ? (
-
+              ) : filteredLeads.length === 0 ? (
                 <tr>
                   <td
                     colSpan={7}
@@ -196,11 +232,8 @@ const Leads = () => {
                     No Leads Found
                   </td>
                 </tr>
-
               ) : (
-
-                leads.map((lead) => (
-
+                filteredLeads.map((lead) => (
                   <tr
                     key={lead.id}
                     className="border-t hover:bg-gray-50 transition"
@@ -232,20 +265,13 @@ const Leads = () => {
                     </td>
 
                     <td className="p-4">
-                      {new Date(lead.createdAt).toLocaleDateString()}
+                      {new Date(
+                        lead.createdAt
+                      ).toLocaleDateString()}
                     </td>
 
                     <td className="p-4">
-
-                      <div className="flex items-center justify-center gap-4">
-
-                        {/* <button
-                          className="text-blue-600 hover:text-blue-800"
-                          title="View"
-                        >
-                          <Eye size={18} />
-                        </button> */}
-
+                      <div className="flex justify-center gap-4">
                         <Link
                           href={`/dashboard/edit-lead/${lead.id}`}
                           className="text-green-600 hover:text-green-800"
@@ -253,25 +279,15 @@ const Leads = () => {
                         >
                           <Pencil size={18} />
                         </Link>
-
                       </div>
-
                     </td>
-
                   </tr>
-
                 ))
-
               )}
-
             </tbody>
-
           </table>
-
         </div>
-
       </div>
-
     </PageLayout>
   );
 };
