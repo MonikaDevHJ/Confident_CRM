@@ -44,7 +44,7 @@ export default function RecentLeads() {
               <th className="p-4 text-left">Email</th>
               <th className="p-4 text-left">Status</th>
               <th className="p-4 text-left">Created</th>
-              <th className="p-4 text-left">Action</th>
+              {/* <th className="p-4 text-left">Action</th> */}
             </tr>
           </thead>
 
@@ -77,7 +77,7 @@ export default function RecentLeads() {
                   {new Date(lead.createdAt).toLocaleDateString()}
                 </td>
 
-                <td className="p-4 flex gap-3">
+                {/* <td className="p-4 flex gap-3">
                   <Eye size={18} className="cursor-pointer" />
 
                   <Link href={`/dashboard/edit-lead/${lead.id}`}>
@@ -86,7 +86,7 @@ export default function RecentLeads() {
                       className="cursor-pointer text-green-600"
                     />
                   </Link>
-                </td>
+                </td> */}
               </tr>
             )}
           </tbody>
