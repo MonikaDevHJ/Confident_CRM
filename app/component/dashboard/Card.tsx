@@ -1,53 +1,81 @@
-import { Users, UserPlus, Phone, CheckCircle, Plus } from "lucide-react";
+"use client";
+
+import { useEffect, useState } from "react";
+import {
+  Users,
+  UserPlus,
+  Phone,
+  CheckCircle,
+} from "lucide-react";
 import Link from "next/link";
 
-const stats = [
-  {
-    title: "Total Leads",
-    value: "50",
-    description: "All time leads",
-    icon: Users,
-    bgColor: "bg-purple-100",
-    iconColor: "text-purple-600"
-  },
-  {
-    title: "New Leads",
-    value: "10",
-    description: "Not contacted yet",
-    icon: UserPlus,
-    bgColor: "bg-green-100",
-    iconColor: "text-green-600"
-  },
-  {
-    title: "Contacted",
-    value: "20",
-    description: "In conversation",
-    icon: Phone,
-    bgColor: "bg-orange-100",
-    iconColor: "text-orange-600"
-  },
-  {
-    title: "Closed",
-    value: "20",
-    description: "Successfully closed",
-    icon: CheckCircle,
-    bgColor: "bg-blue-100",
-    iconColor: "text-blue-600"
-  }
-];
+export default function Card() {
+  const [stats, setStats] = useState({
+    total: 0,
+    new: 0,
+    contacted: 0,
+    closed: 0,
+  });
 
-const Card = () => {
+  useEffect(() => {
+    fetch("/api/leads")
+      .then((res) => res.json())
+      .then((data) => {
+        setStats({
+          total: data.length,
+          new: data.filter((l: any) => l.status === "New").length,
+          contacted: data.filter((l: any) => l.status === "Contacted").length,
+          closed: data.filter((l: any) => l.status === "Closed").length,
+        });
+      });
+  }, []);
+
+  const cards = [
+    {
+      title: "Total Leads",
+      value: stats.total,
+      description: "All time leads",
+      icon: Users,
+      bg: "bg-purple-100",
+      color: "text-purple-600",
+    },
+    {
+      title: "New Leads",
+      value: stats.new,
+      description: "Not contacted yet",
+      icon: UserPlus,
+      bg: "bg-green-100",
+      color: "text-green-600",
+    },
+    {
+      title: "Contacted",
+      value: stats.contacted,
+      description: "In conversation",
+      icon: Phone,
+      bg: "bg-orange-100",
+      color: "text-orange-600",
+    },
+    {
+      title: "Closed",
+      value: stats.closed,
+      description: "Successfully closed",
+      icon: CheckCircle,
+      bg: "bg-blue-100",
+      color: "text-blue-600",
+    },
+  ];
+
   return (
     <section className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
 
-          <p className="text-sm text-gray-500 mt-1">
-            Welcome back, manage your leads efficiently.
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold">Dashboard</h1>
+          <p className="text-gray-500">
+            Welcome back.
           </p>
         </div>
+
         <Link
           href="/dashboard/add-lead"
           className="bg-blue-600 text-white px-5 py-3 rounded-xl"
@@ -56,41 +84,40 @@ const Card = () => {
         </Link>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
-        {stats.map((item) => {
-          const Icon = item.icon;
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+
+        {cards.map((card) => {
+          const Icon = card.icon;
 
           return (
             <div
-              key={item.title}
-              className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-lg transition-all duration-300"
+              key={card.title}
+              className="bg-white rounded-2xl p-6 shadow"
             >
-              <div className="flex items-center gap-4">
-                <div
-                  className={`h-14 w-14 rounded-full flex items-center justify-center ${item.bgColor}`}
-                >
-                  <Icon size={28} className={item.iconColor} />
-                </div>
+              <div className="flex justify-between">
 
                 <div>
-                  <h3 className="text-gray-600 text-sm font-medium">
-                    {item.title}
-                  </h3>
+                  <p>{card.title}</p>
 
-                  <h2 className="text-4xl font-bold text-gray-900">
-                    {item.value}
-                  </h2>
+                  <h1 className="text-4xl font-bold">
+                    {card.value}
+                  </h1>
                 </div>
+
+                <div className={`${card.bg} p-3 rounded-full`}>
+                  <Icon className={card.color} />
+                </div>
+
               </div>
 
-              <p className="text-sm text-gray-500 mt-4">{item.description}</p>
+              <p className="mt-4 text-gray-500">
+                {card.description}
+              </p>
             </div>
           );
         })}
+
       </div>
     </section>
   );
-};
-
-export default Card;
+}
