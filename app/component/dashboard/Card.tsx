@@ -1,10 +1,5 @@
-import {
-  Users,
-  UserPlus,
-  Phone,
-  CheckCircle,
-  Plus,
-} from "lucide-react";
+import { Users, UserPlus, Phone, CheckCircle, Plus } from "lucide-react";
+import Link from "next/link";
 
 const stats = [
   {
@@ -13,7 +8,7 @@ const stats = [
     description: "All time leads",
     icon: Users,
     bgColor: "bg-purple-100",
-    iconColor: "text-purple-600",
+    iconColor: "text-purple-600"
   },
   {
     title: "New Leads",
@@ -21,7 +16,7 @@ const stats = [
     description: "Not contacted yet",
     icon: UserPlus,
     bgColor: "bg-green-100",
-    iconColor: "text-green-600",
+    iconColor: "text-green-600"
   },
   {
     title: "Contacted",
@@ -29,7 +24,7 @@ const stats = [
     description: "In conversation",
     icon: Phone,
     bgColor: "bg-orange-100",
-    iconColor: "text-orange-600",
+    iconColor: "text-orange-600"
   },
   {
     title: "Closed",
@@ -37,8 +32,8 @@ const stats = [
     description: "Successfully closed",
     icon: CheckCircle,
     bgColor: "bg-blue-100",
-    iconColor: "text-blue-600",
-  },
+    iconColor: "text-blue-600"
+  }
 ];
 
 const Card = () => {
@@ -47,19 +42,18 @@ const Card = () => {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">
-            Dashboard
-          </h1>
+          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
 
           <p className="text-sm text-gray-500 mt-1">
             Welcome back, manage your leads efficiently.
           </p>
         </div>
-
-        <button className="flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-white font-medium shadow-md hover:bg-blue-700 transition">
-          <Plus size={18} />
-          Add New Lead
-        </button>
+        <Link
+          href="/dashboard/add-lead"
+          className="bg-blue-600 text-white px-5 py-3 rounded-xl"
+        >
+          + Add New Lead
+        </Link>
       </div>
 
       {/* Stats Cards */}
@@ -76,10 +70,7 @@ const Card = () => {
                 <div
                   className={`h-14 w-14 rounded-full flex items-center justify-center ${item.bgColor}`}
                 >
-                  <Icon
-                    size={28}
-                    className={item.iconColor}
-                  />
+                  <Icon size={28} className={item.iconColor} />
                 </div>
 
                 <div>
@@ -93,9 +84,7 @@ const Card = () => {
                 </div>
               </div>
 
-              <p className="text-sm text-gray-500 mt-4">
-                {item.description}
-              </p>
+              <p className="text-sm text-gray-500 mt-4">{item.description}</p>
             </div>
           );
         })}
