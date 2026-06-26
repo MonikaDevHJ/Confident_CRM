@@ -8,7 +8,7 @@ import SideBar from "../component/dashboard/SideBar";
 const DashBoard = () => {
   return (
     <div className="flex min-h-screen bg-gray-50">
-      {/* Sidebar */}
+      {/* Sidebar */} 
       <SideBar />
 
       {/* Main Content */}
