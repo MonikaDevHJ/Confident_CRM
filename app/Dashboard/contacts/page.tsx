@@ -216,12 +216,7 @@ const Contact = () => {
                     <td className="p-4">
                       <div className="flex justify-center gap-4">
 
-                        <Link href={`/dashboard/view-lead/${contact.id}`}>
-                          <Eye
-                            size={18}
-                            className="text-blue-600"
-                          />
-                        </Link>
+                     
 
                         <Link href={`/dashboard/edit-lead/${contact.id}`}>
                           <Pencil
