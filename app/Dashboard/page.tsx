@@ -7,9 +7,8 @@ import SalesTip from "../component/dashboard/SalesTip";
 const DashBoard = () => {
   return (
     <div className="space-y-6">
-
       <Card />
-            <SalesTip />
+      <SalesTip />
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <div className="xl:col-span-2">
@@ -20,7 +19,6 @@ const DashBoard = () => {
           <Overview />
         </div>
       </div>
-
 
       <Pipelines />
     </div>
