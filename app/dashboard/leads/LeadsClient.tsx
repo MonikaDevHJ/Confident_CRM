@@ -12,13 +12,13 @@ import {
   CheckCircle,
   Pencil,
   Trash2,
-  Search,
+  Search
 } from "lucide-react";
 
 const Leads = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-const [filteredLeads, setFilteredLeads] = useState<any[]>([]);
+  const [filteredLeads, setFilteredLeads] = useState<any[]>([]);
 
   const [stats, setStats] = useState({
     total: 0,
@@ -43,8 +43,8 @@ const [filteredLeads, setFilteredLeads] = useState<any[]>([]);
           return;
         }
 
-      setLeads(data);
-setFilteredLeads(data);
+        setLeads(data);
+        setFilteredLeads(data);
 
         setStats({
           total: data.length,
@@ -68,11 +68,9 @@ setFilteredLeads(data);
   //   ? leads.filter((lead) => lead.status === statusFilter)
   //   : leads;
 
-    const displayedLeads = statusFilter
-  ? filteredLeads.filter(
-      (lead) => lead.status === statusFilter
-    )
-  : filteredLeads;
+  const displayedLeads = statusFilter
+    ? filteredLeads.filter((lead) => lead.status === statusFilter)
+    : filteredLeads;
   const cards = [
     {
       title: "Total Leads",
@@ -156,247 +154,270 @@ setFilteredLeads(data);
       alert("Something went wrong");
     }
   };
-return (
-  <PageLayout
-    title="Leads"
-    description="Manage all your customer leads."
-  >
-    {/* Top Section */}
+  return (
+    <PageLayout title="Leads" description="Manage all your customer leads.">
+      {/* Top Section */}
 
-    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-      {statusFilter ? (
-        <Link
-          href="/dashboard/leads"
-          className="text-blue-600 font-medium hover:underline"
-        >
-          ← Show All Leads
-        </Link>
-      ) : (
-        <div />
-      )}
-
-      <Link
-        href="/dashboard/add-lead"
-        className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 font-medium text-white transition hover:bg-blue-700 hover:shadow-lg"
-      >
-        <Plus size={18} />
-        Add Lead
-      </Link>
-    </div>
-
-    {/* Stats Cards */}
-
-    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
-      {cards.map((card) => {
-        const Icon = card.icon;
-
-        return (
-          <div
-            key={card.title}
-            className="bg-white rounded-2xl border shadow-sm hover:shadow-md transition-all duration-300 p-5 sm:p-6"
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        {statusFilter ? (
+          <Link
+            href="/dashboard/leads"
+            className="text-blue-600 font-medium hover:underline"
           >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500">
-                  {card.title}
-                </p>
+            ← Show All Leads
+          </Link>
+        ) : (
+          <div />
+        )}
 
-                <h2 className="mt-2 text-3xl sm:text-4xl font-bold text-gray-800">
-                  {loading ? "--" : card.value}
-                </h2>
-              </div>
+        <Link
+          href={loading ? "#" : "/dashboard/add-lead"}
+          className={`w-full sm:w-auto flex items-center justify-center gap-2 rounded-xl px-5 py-3 font-medium text-white transition ${
+            loading
+              ? "bg-blue-400 cursor-not-allowed pointer-events-none"
+              : "bg-blue-600 hover:bg-blue-700 hover:shadow-lg"
+          }`}
+        >
+          <Plus size={18} />
+          Add Lead
+        </Link>
+      </div>
 
-              <div className={`${card.bg} rounded-full p-3`}>
-                <Icon
-                  className={card.color}
-                  size={28}
-                />
+      {/* Stats Cards */}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+        {cards.map((card) => {
+          const Icon = card.icon;
+
+          return (
+            <div
+              key={card.title}
+              className="bg-white rounded-2xl border shadow-sm hover:shadow-md transition-all duration-300 p-5 sm:p-6"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-500">{card.title}</p>
+
+                  {loading ? (
+                    <div className="mt-3 h-10 w-16 rounded-md bg-gray-200 animate-pulse"></div>
+                  ) : (
+                    <h2 className="mt-2 text-3xl sm:text-4xl font-bold text-gray-800">
+                      {card.value}
+                    </h2>
+                  )}
+                </div>
+
+                <div className={`${card.bg} rounded-full p-3`}>
+                  <Icon className={card.color} size={28} />
+                </div>
               </div>
             </div>
-          </div>
-        );
-      })}
-    </div>
-
-    {/* Search */}
-
-<div className="mb-6">
-
-  <div className="relative">
-
-    <Search
-      size={18}
-      className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-    />
-
-    <input
-      type="text"
-      placeholder="Search by name, phone, email, company..."
-      value={search}
-      onChange={(e) => {
-        const value = e.target.value;
-
-        setSearch(value);
-
-        const result = leads.filter((lead) =>
-          `${lead.name} ${lead.email} ${lead.phone} ${lead.company} ${lead.status}`
-            .toLowerCase()
-            .includes(value.toLowerCase())
-        );
-
-        setFilteredLeads(result);
-      }}
-      className="w-full rounded-2xl border bg-white py-3 pl-11 pr-10 shadow-sm focus:border-blue-500 focus:outline-none"
-    />
-
-    {search && (
-      <button
-        onClick={() => {
-          setSearch("");
-          setFilteredLeads(leads);
-        }}
-        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-red-500"
-      >
-        ✕
-      </button>
-    )}
-
-  </div>
-
-</div>
-
-    {/* Leads Table */}
-
-    <div className="overflow-hidden rounded-2xl border bg-white shadow-sm">
-      <div className="border-b px-6 py-5">
-        <h2 className="text-xl font-semibold text-gray-800">
-          {statusFilter
-            ? `${statusFilter} Leads`
-            : "All Leads"}
-        </h2>
+          );
+        })}
       </div>
 
-      <div className="w-full overflow-x-auto rounded-b-2xl">
-        <table className="min-w-[900px] w-full">
-          <thead className="bg-gray-50 border-b">
-            <tr>
-              <th className="px-4 py-4 text-left text-sm font-semibold text-gray-600">
-                Name
-              </th>
+      {/* Search */}
 
-              <th className="px-4 py-4 text-left text-sm font-semibold text-gray-600">
-                Phone
-              </th>
+      <div className="mb-6">
+        <div className="relative">
+          <Search
+            size={18}
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+          />
+          <input
+            type="text"
+            disabled={loading}
+            placeholder={
+              loading
+                ? "Loading leads..."
+                : "Search by name, phone, email, company..."
+            }
+            value={search}
+            onChange={(e) => {
+              const value = e.target.value;
 
-              <th className="px-4 py-4 text-left text-sm font-semibold text-gray-600">
-                Email
-              </th>
+              setSearch(value);
 
-              <th className="px-4 py-4 text-left text-sm font-semibold text-gray-600">
-                Company
-              </th>
+              const result = leads.filter((lead) =>
+                `${lead.name} ${lead.email} ${lead.phone} ${lead.company} ${lead.status}`
+                  .toLowerCase()
+                  .includes(value.toLowerCase())
+              );
 
-              <th className="px-4 py-4 text-left text-sm font-semibold text-gray-600">
-                Status
-              </th>
+              setFilteredLeads(result);
+            }}
+            className="w-full rounded-2xl border bg-white py-3 pl-11 pr-10 shadow-sm focus:border-blue-500 focus:outline-none"
+          />
 
-              <th className="px-4 py-4 text-left text-sm font-semibold text-gray-600">
-                Created
-              </th>
+          {search && (
+            <button
+              onClick={() => {
+                setSearch("");
+                setFilteredLeads(leads);
+              }}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-red-500"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+      </div>
 
-              <th className="px-4 py-4 text-center text-sm font-semibold text-gray-600">
-                Actions
-              </th>
-            </tr>
-          </thead>
+      {/* Leads Table */}
 
-          <tbody>
-            {loading ? (
+      <div
+        className={`overflow-hidden rounded-2xl border bg-white shadow-sm transition-all duration-500 ${
+          loading ? "opacity-70" : "opacity-100"
+        }`}
+      >
+        {" "}
+        <div className="border-b px-6 py-5">
+          <h2 className="text-xl font-semibold text-gray-800">
+            {statusFilter ? `${statusFilter} Leads` : "All Leads"}
+          </h2>
+        </div>
+        <div className="w-full overflow-x-auto rounded-b-2xl">
+          <table className="min-w-[900px] w-full">
+            <thead className="bg-gray-50 border-b">
               <tr>
-                <td
-                  colSpan={7}
-                  className="py-16 text-center text-gray-500"
-                >
-                  Loading Leads...
-                </td>
+                <th className="px-4 py-4 text-left text-sm font-semibold text-gray-600">
+                  Name
+                </th>
+
+                <th className="px-4 py-4 text-left text-sm font-semibold text-gray-600">
+                  Phone
+                </th>
+
+                <th className="px-4 py-4 text-left text-sm font-semibold text-gray-600">
+                  Email
+                </th>
+
+                <th className="px-4 py-4 text-left text-sm font-semibold text-gray-600">
+                  Company
+                </th>
+
+                <th className="px-4 py-4 text-left text-sm font-semibold text-gray-600">
+                  Status
+                </th>
+
+                <th className="px-4 py-4 text-left text-sm font-semibold text-gray-600">
+                  Created
+                </th>
+
+                <th className="px-4 py-4 text-center text-sm font-semibold text-gray-600">
+                  Actions
+                </th>
               </tr>
-            ) : displayedLeads.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={7}
-                  className="py-16 text-center text-gray-500"
-                >
-                  No Leads Found
-                </td>
-              </tr>
-            ) : (
-              displayedLeads.map((lead) => (
-                <tr
-                  key={lead.id}
-                  className="border-b transition-colors hover:bg-blue-50"
-                >
-                  <td className="px-4 py-3 font-medium whitespace-nowrap">
-                    {lead.name}
-                  </td>
+            </thead>
 
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    {lead.phone}
-                  </td>
+            <tbody>
+              {loading ? (
+                <>
+                  {[1, 2, 3, 4, 5].map((row) => (
+                    <tr key={row} className="animate-pulse border-b">
+                      <td className="px-4 py-5">
+                        <div className="h-4 w-32 rounded bg-gray-200"></div>
+                      </td>
 
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    {lead.email}
-                  </td>
+                      <td className="px-4 py-5">
+                        <div className="h-4 w-28 rounded bg-gray-200"></div>
+                      </td>
 
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    {lead.company || "-"}
-                  </td>
+                      <td className="px-4 py-5">
+                        <div className="h-4 w-48 rounded bg-gray-200"></div>
+                      </td>
 
-                  <td className="px-4 py-3">
-                    <span
-                      className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${getStatusStyle(
-                        lead.status
-                      )}`}
-                    >
-                      {lead.status}
-                    </span>
-                  </td>
+                      <td className="px-4 py-5">
+                        <div className="h-4 w-28 rounded bg-gray-200"></div>
+                      </td>
 
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    {new Date(
-                      lead.createdAt
-                    ).toLocaleDateString()}
-                  </td>
+                      <td className="px-4 py-5">
+                        <div className="h-8 w-20 rounded-full bg-gray-200"></div>
+                      </td>
 
-                  <td className="px-4 py-3">
-                    <div className="flex items-center justify-center gap-4">
-                      <Link
-                        href={`/dashboard/edit-lead/${lead.id}`}
-                        className="text-green-600 transition hover:text-green-800"
-                        title="Edit Lead"
-                      >
-                        <Pencil size={18} />
-                      </Link>
+                      <td className="px-4 py-5">
+                        <div className="h-4 w-24 rounded bg-gray-200"></div>
+                      </td>
 
-                      <button
-                        onClick={() =>
-                          handleDelete(lead.id)
-                        }
-                        className="text-red-600 transition hover:text-red-800"
-                        title="Delete Lead"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
+                      <td className="px-4 py-5">
+                        <div className="flex justify-center gap-4">
+                          <div className="h-5 w-5 rounded bg-gray-200"></div>
+                          <div className="h-5 w-5 rounded bg-gray-200"></div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </>
+              ) : displayedLeads.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="py-16 text-center text-gray-500">
+                    No Leads Found
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                displayedLeads.map((lead) => (
+                  <tr
+                    key={lead.id}
+                    className="border-b transition-colors hover:bg-blue-50"
+                  >
+                    <td className="px-4 py-3 font-medium whitespace-nowrap">
+                      {lead.name}
+                    </td>
+
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      {lead.phone}
+                    </td>
+
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      {lead.email}
+                    </td>
+
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      {lead.company || "-"}
+                    </td>
+
+                    <td className="px-4 py-3">
+                      <span
+                        className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${getStatusStyle(
+                          lead.status
+                        )}`}
+                      >
+                        {lead.status}
+                      </span>
+                    </td>
+
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      {new Date(lead.createdAt).toLocaleDateString()}
+                    </td>
+
+                    <td className="px-4 py-3">
+                      <div className="flex items-center justify-center gap-4">
+                        <Link
+                          href={`/dashboard/edit-lead/${lead.id}`}
+                          className="text-green-600 transition hover:text-green-800"
+                          title="Edit Lead"
+                        >
+                          <Pencil size={18} />
+                        </Link>
+
+                        <button
+                          onClick={() => handleDelete(lead.id)}
+                          className="text-red-600 transition hover:text-red-800"
+                          title="Delete Lead"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
-  </PageLayout>
-);
+    </PageLayout>
+  );
 };
 
 export default Leads;

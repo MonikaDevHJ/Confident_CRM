@@ -1,40 +1,44 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  Users,
-  UserPlus,
-  Phone,
-  CheckCircle,
-  Eye,
-} from "lucide-react";
+import { Users, UserPlus, Phone, CheckCircle, Eye } from "lucide-react";
 import Link from "next/link";
 
 export default function Card() {
+  const [loading, setLoading] = useState(true);
+
   const [stats, setStats] = useState({
     total: 0,
     new: 0,
     contacted: 0,
-    closed: 0,
+    closed: 0
   });
 
   useEffect(() => {
-    fetch("/api/leads")
-      .then((res) => res.json())
-      .then((data) => {
+    const fetchStats = async () => {
+      try {
+        const res = await fetch("/api/leads", {
+          cache: "no-store"
+        });
+
+        const data = await res.json();
+
         if (!Array.isArray(data)) return;
 
         setStats({
           total: data.length,
           new: data.filter((l: any) => l.status === "New").length,
-          contacted: data.filter(
-            (l: any) => l.status === "Contacted"
-          ).length,
-          closed: data.filter(
-            (l: any) => l.status === "Closed"
-          ).length,
+          contacted: data.filter((l: any) => l.status === "Contacted").length,
+          closed: data.filter((l: any) => l.status === "Closed").length
         });
-      });
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
   }, []);
 
   const cards = [
@@ -45,7 +49,7 @@ export default function Card() {
       icon: Users,
       bg: "bg-purple-100",
       color: "text-purple-600",
-      link: "/dashboard/leads",
+      link: "/dashboard/leads"
     },
     {
       title: "New Leads",
@@ -54,7 +58,7 @@ export default function Card() {
       icon: UserPlus,
       bg: "bg-green-100",
       color: "text-green-600",
-      link: "/dashboard/leads?status=New",
+      link: "/dashboard/leads?status=New"
     },
     {
       title: "Contacted",
@@ -63,7 +67,7 @@ export default function Card() {
       icon: Phone,
       bg: "bg-orange-100",
       color: "text-orange-600",
-      link: "/dashboard/leads?status=Contacted",
+      link: "/dashboard/leads?status=Contacted"
     },
     {
       title: "Closed",
@@ -72,8 +76,8 @@ export default function Card() {
       icon: CheckCircle,
       bg: "bg-blue-100",
       color: "text-blue-600",
-      link: "/dashboard/leads?status=Closed",
-    },
+      link: "/dashboard/leads?status=Closed"
+    }
   ];
 
   return (
@@ -111,25 +115,20 @@ export default function Card() {
               <div className="flex justify-between items-start">
                 {/* Left */}
                 <div>
-                  <p className="text-gray-500 font-medium">
-                    {card.title}
-                  </p>
+                  <p className="text-gray-500 font-medium">{card.title}</p>
 
-                  <h1 className="text-4xl font-bold mt-2">
-                    {card.value}
-                  </h1>
+                  {loading ? (
+                    <div className="mt-2 h-10 w-16 rounded bg-gray-200 animate-pulse"></div>
+                  ) : (
+                    <h1 className="text-4xl font-bold mt-2">{card.value}</h1>
+                  )}
                 </div>
 
                 {/* Right */}
                 <div className="flex items-center gap-2">
                   {/* Main Icon */}
-                  <div
-                    className={`${card.bg} p-3 rounded-full`}
-                  >
-                    <Icon
-                      className={card.color}
-                      size={22}
-                    />
+                  <div className={`${card.bg} p-3 rounded-full`}>
+                    <Icon className={card.color} size={22} />
                   </div>
 
                   {/* Eye Button */}
@@ -144,9 +143,7 @@ export default function Card() {
                 </div>
               </div>
 
-              <p className="mt-5 text-gray-500">
-                {card.description}
-              </p>
+              <p className="mt-5 text-gray-500">{card.description}</p>
             </div>
           );
         })}

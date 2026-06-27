@@ -45,154 +45,210 @@ const Notes = () => {
 
   const totalNotes = notes.filter((n) => n.notes).length;
 
-  return (
-    <PageLayout
-      title="Notes"
-      description="Manage all customer notes."
-    >
-      {/* Top Card */}
+return (
+  <PageLayout
+    title="Notes"
+    description="Manage all customer notes."
+  >
+    {/* Top Card */}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
 
-        <div className="bg-white rounded-2xl shadow border p-6">
+      <div className="bg-white rounded-2xl shadow border p-6">
 
-          <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center">
 
-            <div>
-              <p className="text-gray-500">
-                Total Notes
-              </p>
+          <div>
 
+            <p className="text-gray-500">
+              Total Notes
+            </p>
+
+            {loading ? (
+              <div className="mt-3 h-10 w-20 rounded bg-gray-200 animate-pulse"></div>
+            ) : (
               <h1 className="text-4xl font-bold mt-2">
-                {loading ? "--" : totalNotes}
+                {totalNotes}
               </h1>
-            </div>
+            )}
 
-            <div className="bg-yellow-100 p-3 rounded-full">
-              <StickyNote
-                size={28}
-                className="text-yellow-600"
-              />
-            </div>
+          </div>
 
+          <div className="bg-yellow-100 p-3 rounded-full">
+            <StickyNote
+              size={28}
+              className="text-yellow-600"
+            />
           </div>
 
         </div>
 
       </div>
 
-      {/* Search */}
+    </div>
 
-      <div className="bg-white rounded-2xl shadow border p-5 mb-6">
+    {/* Search */}
 
-        <div className="relative max-w-md">
+    <div className="bg-white rounded-2xl shadow border p-5 mb-6">
 
-          <Search
-            size={18}
-            className="absolute left-4 top-3.5 text-gray-400"
-          />
+      <div className="relative max-w-md">
 
-          <input
-            type="text"
-            placeholder="Search notes..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full border rounded-xl pl-11 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+        <Search
+          size={18}
+          className="absolute left-4 top-3.5 text-gray-400"
+        />
 
-        </div>
+        <input
+          type="text"
+          placeholder="Search notes..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full border rounded-xl pl-11 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
 
       </div>
 
-      {/* Notes */}
+    </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+    {/* Notes */}
 
-        {loading ? (
-          <div className="col-span-full text-center py-16">
-            Loading Notes...
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+
+      {loading ? (
+
+        Array.from({ length: 6 }).map((_, index) => (
+
+          <div
+            key={index}
+            className="bg-white rounded-2xl shadow border p-6 animate-pulse"
+          >
+
+            {/* Header */}
+
+            <div className="flex justify-between items-center">
+
+              <div className="flex items-center gap-3">
+
+                <div className="w-9 h-9 rounded-full bg-gray-200"></div>
+
+                <div className="h-5 w-32 rounded bg-gray-200"></div>
+
+              </div>
+
+              <div className="h-5 w-5 rounded bg-gray-200"></div>
+
+            </div>
+
+            {/* Note */}
+
+            <div className="mt-6 space-y-3">
+
+              <div className="h-4 w-full rounded bg-gray-200"></div>
+
+              <div className="h-4 w-full rounded bg-gray-200"></div>
+
+              <div className="h-4 w-3/4 rounded bg-gray-200"></div>
+
+            </div>
+
+            {/* Footer */}
+
+            <div className="mt-8 flex justify-between items-center">
+
+              <div className="h-8 w-20 rounded-full bg-gray-200"></div>
+
+              <div className="h-4 w-24 rounded bg-gray-200"></div>
+
+            </div>
+
           </div>
-        ) : filteredNotes.filter((n) => n.notes).length === 0 ? (
-          <div className="col-span-full text-center py-16 text-gray-500">
-            No Notes Found
-          </div>
-        ) : (
-          filteredNotes
-            .filter((lead) => lead.notes)
-            .map((lead) => (
-              <div
-                key={lead.id}
-                className="bg-white rounded-2xl shadow border p-6 hover:shadow-lg transition"
-              >
-                <div className="flex justify-between items-start">
 
-                  <div className="flex items-center gap-2">
+        ))
 
-                    <User
-                      size={18}
-                      className="text-blue-600"
-                    />
+      ) : filteredNotes.filter((n) => n.notes).length === 0 ? (
 
-                    <h2 className="font-bold text-lg">
-                      {lead.name}
-                    </h2>
+        <div className="col-span-full text-center py-16 text-gray-500">
+          No Notes Found
+        </div>
 
-                  </div>
+      ) : (
 
-                  <Link
-                    href={`/dashboard/edit-lead/${lead.id}`}
-                  >
-                    <Pencil
-                      size={18}
-                      className="text-green-600 hover:text-green-800"
-                    />
-                  </Link>
+        filteredNotes
+          .filter((lead) => lead.notes)
+          .map((lead) => (
+
+            <div
+              key={lead.id}
+              className="bg-white rounded-2xl shadow border p-6 hover:shadow-lg transition"
+            >
+
+              <div className="flex justify-between items-start">
+
+                <div className="flex items-center gap-2">
+
+                  <User
+                    size={18}
+                    className="text-blue-600"
+                  />
+
+                  <h2 className="font-bold text-lg">
+                    {lead.name}
+                  </h2>
 
                 </div>
 
-                <p className="mt-5 text-gray-600 leading-7">
-                  {lead.notes}
-                </p>
+                <Link href={`/dashboard/edit-lead/${lead.id}`}>
+                  <Pencil
+                    size={18}
+                    className="text-green-600 hover:text-green-800"
+                  />
+                </Link>
 
-                <div className="mt-6 flex items-center justify-between">
+              </div>
 
-                  <span
-                    className={`px-3 py-1 rounded-lg text-sm
-                    ${
-                      lead.status === "New"
-                        ? "bg-green-100 text-green-700"
-                        : lead.status === "Contacted"
-                        ? "bg-orange-100 text-orange-700"
-                        : lead.status === "Qualified"
-                        ? "bg-blue-100 text-blue-700"
-                        : lead.status === "Closed"
-                        ? "bg-purple-100 text-purple-700"
-                        : "bg-gray-100 text-gray-700"
-                    }`}
-                  >
-                    {lead.status}
-                  </span>
+              <p className="mt-5 text-gray-600 leading-7">
+                {lead.notes}
+              </p>
 
-                  <div className="flex items-center gap-2 text-gray-500 text-sm">
+              <div className="mt-6 flex items-center justify-between">
 
-                    <Calendar size={15} />
+                <span
+                  className={`px-3 py-1 rounded-lg text-sm
+                  ${
+                    lead.status === "New"
+                      ? "bg-green-100 text-green-700"
+                      : lead.status === "Contacted"
+                      ? "bg-orange-100 text-orange-700"
+                      : lead.status === "Qualified"
+                      ? "bg-blue-100 text-blue-700"
+                      : lead.status === "Closed"
+                      ? "bg-purple-100 text-purple-700"
+                      : "bg-gray-100 text-gray-700"
+                  }`}
+                >
+                  {lead.status}
+                </span>
 
-                    {new Date(
-                      lead.createdAt
-                    ).toLocaleDateString()}
+                <div className="flex items-center gap-2 text-gray-500 text-sm">
 
-                  </div>
+                  <Calendar size={15} />
+
+                  {new Date(lead.createdAt).toLocaleDateString()}
 
                 </div>
 
               </div>
-            ))
-        )}
 
-      </div>
+            </div>
 
-    </PageLayout>
-  );
+          ))
+
+      )}
+
+    </div>
+
+  </PageLayout>
+);
 };
 
 export default Notes;

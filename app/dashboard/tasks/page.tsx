@@ -96,144 +96,206 @@ const Task = () => {
   };
 
   return (
-    <PageLayout
-      title="Tasks"
-      description="Track and manage daily CRM tasks."
-    >
-      {/* Cards */}
+  <PageLayout
+    title="Tasks"
+    description="Track and manage daily CRM tasks."
+  >
+    {/* Cards */}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
 
-        <div className="bg-white rounded-2xl shadow border p-6">
-          <h3 className="text-gray-500">
-            Pending Tasks
-          </h3>
-
-          <h1 className="text-4xl font-bold mt-2">
-            {loading ? "--" : pending}
-          </h1>
-        </div>
-
-        <div className="bg-white rounded-2xl shadow border p-6">
-          <h3 className="text-gray-500">
-            In Progress
-          </h3>
-
-          <h1 className="text-4xl font-bold mt-2">
-            {loading ? "--" : inProgress}
-          </h1>
-        </div>
-
-        <div className="bg-white rounded-2xl shadow border p-6">
-          <h3 className="text-gray-500">
-            Completed
-          </h3>
-
-          <h1 className="text-4xl font-bold mt-2">
-            {loading ? "--" : completed}
-          </h1>
-        </div>
-
-      </div>
-
-      {/* Search */}
-
-      <div className="bg-white rounded-2xl shadow border p-5 mb-6">
-
-        <div className="relative max-w-md">
-
-          <Search
-            size={18}
-            className="absolute left-4 top-3.5 text-gray-400"
-          />
-
-          <input
-            type="text"
-            placeholder="Search Tasks..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full border rounded-xl pl-11 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-
-        </div>
-
-      </div>
-
-      {/* Tasks */}
-
-      <div className="space-y-5">
+      <div className="bg-white rounded-2xl shadow border p-6">
+        <h3 className="text-gray-500">
+          Pending Tasks
+        </h3>
 
         {loading ? (
-          <div className="bg-white rounded-2xl shadow border p-10 text-center">
-            Loading Tasks...
-          </div>
-        ) : filteredTasks.length === 0 ? (
-          <div className="bg-white rounded-2xl shadow border p-10 text-center text-gray-500">
-            No Tasks Found
-          </div>
+          <div className="mt-3 h-10 w-16 rounded bg-gray-200 animate-pulse"></div>
         ) : (
-          filteredTasks.map((lead) => {
-            const badge = getBadge(lead.status);
-
-            return (
-              <div
-                key={lead.id}
-                className="bg-white rounded-2xl shadow border p-6 hover:shadow-lg transition"
-              >
-                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
-
-                  <div>
-
-                    <div className="flex items-center gap-2 mb-2">
-
-                      <User
-                        size={18}
-                        className="text-blue-600"
-                      />
-
-                      <h2 className="text-lg font-bold">
-                        {lead.name}
-                      </h2>
-
-                    </div>
-
-                    <p className="text-gray-500">
-                      {lead.company || "No Company"}
-                    </p>
-
-                  </div>
-
-                  <div
-                    className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium ${badge.color}`}
-                  >
-                    {badge.icon}
-
-                    {badge.text}
-                  </div>
-
-                  <div className="text-gray-500 text-sm">
-                    {new Date(
-                      lead.createdAt
-                    ).toLocaleDateString()}
-                  </div>
-
-                  <Link
-                    href={`/dashboard/edit-lead/${lead.id}`}
-                    className="text-green-600 hover:text-green-800"
-                  >
-                    <Pencil size={20} />
-                  </Link>
-
-                </div>
-              </div>
-            );
-          })
+          <h1 className="text-4xl font-bold mt-2">
+            {pending}
+          </h1>
         )}
+      </div>
+
+      <div className="bg-white rounded-2xl shadow border p-6">
+        <h3 className="text-gray-500">
+          In Progress
+        </h3>
+
+        {loading ? (
+          <div className="mt-3 h-10 w-16 rounded bg-gray-200 animate-pulse"></div>
+        ) : (
+          <h1 className="text-4xl font-bold mt-2">
+            {inProgress}
+          </h1>
+        )}
+      </div>
+
+      <div className="bg-white rounded-2xl shadow border p-6">
+        <h3 className="text-gray-500">
+          Completed
+        </h3>
+
+        {loading ? (
+          <div className="mt-3 h-10 w-16 rounded bg-gray-200 animate-pulse"></div>
+        ) : (
+          <h1 className="text-4xl font-bold mt-2">
+            {completed}
+          </h1>
+        )}
+      </div>
+
+    </div>
+
+    {/* Search */}
+
+    <div className="bg-white rounded-2xl shadow border p-5 mb-6">
+
+      <div className="relative max-w-md">
+
+        <Search
+          size={18}
+          className="absolute left-4 top-3.5 text-gray-400"
+        />
+
+        <input
+          type="text"
+          placeholder="Search Tasks..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full border rounded-xl pl-11 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
 
       </div>
 
-    </PageLayout>
-  );
+    </div>
+
+    {/* Tasks */}
+
+    <div className="space-y-5">
+
+      {loading ? (
+
+        Array.from({ length: 5 }).map((_, index) => (
+
+          <div
+            key={index}
+            className="bg-white rounded-2xl shadow border p-6 animate-pulse"
+          >
+
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+
+              {/* Left */}
+
+              <div className="flex-1">
+
+                <div className="flex items-center gap-3 mb-3">
+
+                  <div className="w-5 h-5 rounded-full bg-gray-200"></div>
+
+                  <div className="h-5 w-40 rounded bg-gray-200"></div>
+
+                </div>
+
+                <div className="h-4 w-28 rounded bg-gray-200"></div>
+
+              </div>
+
+              {/* Status */}
+
+              <div className="h-10 w-32 rounded-full bg-gray-200"></div>
+
+              {/* Date */}
+
+              <div className="h-4 w-24 rounded bg-gray-200"></div>
+
+              {/* Edit */}
+
+              <div className="h-6 w-6 rounded bg-gray-200"></div>
+
+            </div>
+
+          </div>
+
+        ))
+
+      ) : filteredTasks.length === 0 ? (
+
+        <div className="bg-white rounded-2xl shadow border p-10 text-center text-gray-500">
+          No Tasks Found
+        </div>
+
+      ) : (
+
+        filteredTasks.map((lead) => {
+
+          const badge = getBadge(lead.status);
+
+          return (
+
+            <div
+              key={lead.id}
+              className="bg-white rounded-2xl shadow border p-6 hover:shadow-lg transition"
+            >
+
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+
+                <div>
+
+                  <div className="flex items-center gap-2 mb-2">
+
+                    <User
+                      size={18}
+                      className="text-blue-600"
+                    />
+
+                    <h2 className="text-lg font-bold">
+                      {lead.name}
+                    </h2>
+
+                  </div>
+
+                  <p className="text-gray-500">
+                    {lead.company || "No Company"}
+                  </p>
+
+                </div>
+
+                <div
+                  className={`flex items-center gap-2 px-4 py-2 rounded-full font-medium ${badge.color}`}
+                >
+                  {badge.icon}
+                  {badge.text}
+                </div>
+
+                <div className="text-gray-500 text-sm">
+                  {new Date(
+                    lead.createdAt
+                  ).toLocaleDateString()}
+                </div>
+
+                <Link
+                  href={`/dashboard/edit-lead/${lead.id}`}
+                  className="text-green-600 hover:text-green-800"
+                >
+                  <Pencil size={20} />
+                </Link>
+
+              </div>
+
+            </div>
+
+          );
+
+        })
+
+      )}
+
+    </div>
+
+  </PageLayout>
+);
 };
 
 export default Task;

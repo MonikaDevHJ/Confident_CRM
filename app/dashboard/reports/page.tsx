@@ -101,73 +101,104 @@ const Report = () => {
     },
   ];
 
-  return (
-    <PageLayout
-      title="Reports"
-      description="CRM Performance Reports"
-    >
-      {/* Top Cards */}
+return (
+  <PageLayout
+    title="Reports"
+    description="CRM Performance Reports"
+  >
+    {/* Top Cards */}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
 
-        {cards.map((card) => {
-          const Icon = card.icon;
+      {cards.map((card) => {
+        const Icon = card.icon;
 
-          return (
-            <div
-              key={card.title}
-              className="bg-white rounded-2xl shadow border p-6"
-            >
-              <div className="flex justify-between">
+        return (
+          <div
+            key={card.title}
+            className="bg-white rounded-2xl shadow border p-6"
+          >
+            <div className="flex justify-between">
 
-                <div>
-                  <p className="text-gray-500">
-                    {card.title}
-                  </p>
+              <div>
 
+                <p className="text-gray-500">
+                  {card.title}
+                </p>
+
+                {loading ? (
+                  <div className="mt-3 h-10 w-16 rounded bg-gray-200 animate-pulse"></div>
+                ) : (
                   <h1 className="text-4xl font-bold mt-2">
-                    {loading ? "--" : card.value}
+                    {card.value}
                   </h1>
-                </div>
-
-                <div className={`${card.bg} p-3 rounded-full`}>
-                  <Icon
-                    className={card.color}
-                    size={28}
-                  />
-                </div>
+                )}
 
               </div>
+
+              <div className={`${card.bg} p-3 rounded-full`}>
+                <Icon
+                  className={card.color}
+                  size={28}
+                />
+              </div>
+
             </div>
-          );
-        })}
+          </div>
+        );
+      })}
 
-      </div>
+    </div>
 
-      {/* Reports */}
+    {/* Reports */}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-        {/* Lead Distribution */}
+      {/* Lead Distribution */}
 
-        <div className="bg-white rounded-2xl shadow border p-6">
+      <div className="bg-white rounded-2xl shadow border p-6">
 
-          <h2 className="text-xl font-semibold mb-6">
-            Lead Distribution
-          </h2>
+        <h2 className="text-xl font-semibold mb-6">
+          Lead Distribution
+        </h2>
+
+        {loading ? (
+
+          <div className="space-y-6">
+
+            {Array.from({ length: 4 }).map((_, index) => (
+
+              <div key={index} className="animate-pulse">
+
+                <div className="flex justify-between mb-2">
+
+                  <div className="h-4 w-24 rounded bg-gray-200"></div>
+
+                  <div className="h-4 w-10 rounded bg-gray-200"></div>
+
+                </div>
+
+                <div className="w-full h-3 rounded-full bg-gray-200"></div>
+
+              </div>
+
+            ))}
+
+          </div>
+
+        ) : (
 
           <div className="space-y-5">
 
             {reportData.map((item) => (
+
               <div key={item.label}>
 
                 <div className="flex justify-between mb-2">
 
                   <span>{item.label}</span>
 
-                  <span>
-                    {item.value}
-                  </span>
+                  <span>{item.value}</span>
 
                 </div>
 
@@ -183,28 +214,69 @@ const Report = () => {
                 </div>
 
               </div>
+
             ))}
 
           </div>
 
-        </div>
+        )}
 
-        {/* Summary */}
+      </div>
 
-        <div className="bg-white rounded-2xl shadow border p-6">
+      {/* Performance Summary */}
 
-          <h2 className="text-xl font-semibold mb-6">
-            Performance Summary
-          </h2>
+      <div className="bg-white rounded-2xl shadow border p-6">
+
+        <h2 className="text-xl font-semibold mb-6">
+          Performance Summary
+        </h2>
+
+        {loading ? (
+
+          <div className="space-y-6 animate-pulse">
+
+            {Array.from({ length: 5 }).map((_, index) => (
+
+              <div
+                key={index}
+                className="flex justify-between"
+              >
+
+                <div className="h-4 w-32 rounded bg-gray-200"></div>
+
+                <div className="h-4 w-12 rounded bg-gray-200"></div>
+
+              </div>
+
+            ))}
+
+            <hr />
+
+            <div className="rounded-xl bg-gray-100 p-5">
+
+              <div className="h-5 w-32 rounded bg-gray-200 mb-4"></div>
+
+              <div className="space-y-2">
+
+                <div className="h-4 w-full rounded bg-gray-200"></div>
+
+                <div className="h-4 w-5/6 rounded bg-gray-200"></div>
+
+                <div className="h-4 w-3/4 rounded bg-gray-200"></div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        ) : (
 
           <div className="space-y-6">
 
             <div className="flex justify-between">
               <span>Total Leads</span>
-
-              <strong>
-                {stats.total}
-              </strong>
+              <strong>{stats.total}</strong>
             </div>
 
             <div className="flex justify-between">
@@ -217,30 +289,22 @@ const Report = () => {
                       (stats.closed / stats.total) * 100
                     )}%`}
               </strong>
+
             </div>
 
             <div className="flex justify-between">
               <span>Qualified Leads</span>
-
-              <strong>
-                {stats.qualified}
-              </strong>
+              <strong>{stats.qualified}</strong>
             </div>
 
             <div className="flex justify-between">
               <span>Contacted Leads</span>
-
-              <strong>
-                {stats.contacted}
-              </strong>
+              <strong>{stats.contacted}</strong>
             </div>
 
             <div className="flex justify-between">
               <span>New Leads</span>
-
-              <strong>
-                {stats.new}
-              </strong>
+              <strong>{stats.new}</strong>
             </div>
 
             <hr />
@@ -252,21 +316,25 @@ const Report = () => {
               </h3>
 
               <p className="mt-2 text-gray-600 leading-7">
+
                 {stats.closed > stats.new
                   ? "Excellent! Most of your leads are getting converted successfully."
                   : "You have many new leads waiting for follow-up. Focus on contacting them to improve your conversion rate."}
+
               </p>
 
             </div>
 
           </div>
 
-        </div>
+        )}
 
       </div>
 
-    </PageLayout>
-  );
+    </div>
+
+  </PageLayout>
+);
 };
 
 export default Report;
