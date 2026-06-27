@@ -11,6 +11,7 @@ import {
   Phone,
   CheckCircle,
   Pencil,
+  Trash2
 } from "lucide-react";
 
 const Leads = () => {
@@ -20,7 +21,7 @@ const Leads = () => {
     total: 0,
     new: 0,
     contacted: 0,
-    closed: 0,
+    closed: 0
   });
 
   const [leads, setLeads] = useState<any[]>([]);
@@ -44,12 +45,9 @@ const Leads = () => {
         setStats({
           total: data.length,
           new: data.filter((lead: any) => lead.status === "New").length,
-          contacted: data.filter(
-            (lead: any) => lead.status === "Contacted"
-          ).length,
-          closed: data.filter(
-            (lead: any) => lead.status === "Closed"
-          ).length,
+          contacted: data.filter((lead: any) => lead.status === "Contacted")
+            .length,
+          closed: data.filter((lead: any) => lead.status === "Closed").length
         });
       } catch (error) {
         console.log(error);
@@ -72,29 +70,29 @@ const Leads = () => {
       value: stats.total,
       icon: Users,
       bg: "bg-purple-100",
-      color: "text-purple-600",
+      color: "text-purple-600"
     },
     {
       title: "New Leads",
       value: stats.new,
       icon: UserPlus,
       bg: "bg-green-100",
-      color: "text-green-600",
+      color: "text-green-600"
     },
     {
       title: "Contacted",
       value: stats.contacted,
       icon: Phone,
       bg: "bg-orange-100",
-      color: "text-orange-600",
+      color: "text-orange-600"
     },
     {
       title: "Closed",
       value: stats.closed,
       icon: CheckCircle,
       bg: "bg-blue-100",
-      color: "text-blue-600",
-    },
+      color: "text-blue-600"
+    }
   ];
 
   const getStatusStyle = (status: string) => {
@@ -112,11 +110,46 @@ const Leads = () => {
     }
   };
 
+  const handleDelete = async (id: string) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this lead?"
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      const res = await fetch(`/api/leads/${id}`, {
+        method: "DELETE"
+      });
+
+      if (!res.ok) {
+        alert("Failed to delete lead");
+        return;
+      }
+
+      const deletedLead = leads.find((lead) => lead.id === id);
+
+      setLeads((prev) => prev.filter((lead) => lead.id !== id));
+
+      if (deletedLead) {
+        setStats((prev) => ({
+          total: prev.total - 1,
+          new: prev.new - (deletedLead.status === "New" ? 1 : 0),
+          contacted:
+            prev.contacted - (deletedLead.status === "Contacted" ? 1 : 0),
+          closed: prev.closed - (deletedLead.status === "Closed" ? 1 : 0)
+        }));
+      }
+
+      alert("Lead deleted successfully");
+    } catch (error) {
+      console.log(error);
+      alert("Something went wrong");
+    }
+  };
+
   return (
-    <PageLayout
-      title="Leads"
-      description="Manage all your customer leads."
-    >
+    <PageLayout title="Leads" description="Manage all your customer leads.">
       {/* Top Buttons */}
 
       <div className="flex justify-between items-center mb-6">
@@ -153,9 +186,7 @@ const Leads = () => {
             >
               <div className="flex justify-between items-center">
                 <div>
-                  <p className="text-gray-500">
-                    {card.title}
-                  </p>
+                  <p className="text-gray-500">{card.title}</p>
 
                   <h1 className="text-4xl font-bold mt-2">
                     {loading ? "--" : card.value}
@@ -163,10 +194,7 @@ const Leads = () => {
                 </div>
 
                 <div className={`${card.bg} p-3 rounded-full`}>
-                  <Icon
-                    className={card.color}
-                    size={28}
-                  />
+                  <Icon className={card.color} size={28} />
                 </div>
               </div>
             </div>
@@ -179,9 +207,7 @@ const Leads = () => {
       <div className="bg-white rounded-2xl shadow border overflow-hidden">
         <div className="px-6 py-5 border-b">
           <h2 className="text-xl font-semibold">
-            {statusFilter
-              ? `${statusFilter} Leads`
-              : "All Leads"}
+            {statusFilter ? `${statusFilter} Leads` : "All Leads"}
           </h2>
         </div>
 
@@ -189,46 +215,26 @@ const Leads = () => {
           <table className="w-full">
             <thead className="bg-gray-100">
               <tr>
-                <th className="p-4 text-left">
-                  Name
-                </th>
-                <th className="p-4 text-left">
-                  Phone
-                </th>
-                <th className="p-4 text-left">
-                  Email
-                </th>
-                <th className="p-4 text-left">
-                  Company
-                </th>
-                <th className="p-4 text-left">
-                  Status
-                </th>
-                <th className="p-4 text-left">
-                  Created
-                </th>
-                <th className="p-4 text-center">
-                  Actions
-                </th>
+                <th className="p-4 text-left">Name</th>
+                <th className="p-4 text-left">Phone</th>
+                <th className="p-4 text-left">Email</th>
+                <th className="p-4 text-left">Company</th>
+                <th className="p-4 text-left">Status</th>
+                <th className="p-4 text-left">Created</th>
+                <th className="p-4 text-center">Actions</th>
               </tr>
             </thead>
 
             <tbody>
               {loading ? (
                 <tr>
-                  <td
-                    colSpan={7}
-                    className="text-center py-12"
-                  >
+                  <td colSpan={7} className="text-center py-12">
                     Loading Leads...
                   </td>
                 </tr>
               ) : filteredLeads.length === 0 ? (
                 <tr>
-                  <td
-                    colSpan={7}
-                    className="text-center py-12 text-gray-500"
-                  >
+                  <td colSpan={7} className="text-center py-12 text-gray-500">
                     No Leads Found
                   </td>
                 </tr>
@@ -238,21 +244,13 @@ const Leads = () => {
                     key={lead.id}
                     className="border-t hover:bg-gray-50 transition"
                   >
-                    <td className="p-4 font-medium">
-                      {lead.name}
-                    </td>
+                    <td className="p-4 font-medium">{lead.name}</td>
 
-                    <td className="p-4">
-                      {lead.phone}
-                    </td>
+                    <td className="p-4">{lead.phone}</td>
 
-                    <td className="p-4">
-                      {lead.email}
-                    </td>
+                    <td className="p-4">{lead.email}</td>
 
-                    <td className="p-4">
-                      {lead.company || "-"}
-                    </td>
+                    <td className="p-4">{lead.company || "-"}</td>
 
                     <td className="p-4">
                       <span
@@ -265,20 +263,28 @@ const Leads = () => {
                     </td>
 
                     <td className="p-4">
-                      {new Date(
-                        lead.createdAt
-                      ).toLocaleDateString()}
+                      {new Date(lead.createdAt).toLocaleDateString()}
                     </td>
 
                     <td className="p-4">
-                      <div className="flex justify-center gap-4">
+                      <div className="flex justify-center items-center gap-5">
+                        {/* Edit */}
                         <Link
                           href={`/dashboard/edit-lead/${lead.id}`}
                           className="text-green-600 hover:text-green-800"
-                          title="Edit"
+                          title="Edit Lead"
                         >
                           <Pencil size={18} />
                         </Link>
+
+                        {/* Delete */}
+                        <button
+                          onClick={() => handleDelete(lead.id)}
+                          className="text-red-600 hover:text-red-800"
+                          title="Delete Lead"
+                        >
+                          <Trash2 size={18} />
+                        </button>
                       </div>
                     </td>
                   </tr>

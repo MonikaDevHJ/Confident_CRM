@@ -34,29 +34,7 @@ const Navbar = () => {
             </span>
           </button>
 
-          {/* Profile */}
-          {/* <button className="flex items-center gap-3 rounded-xl px-2 py-2 hover:bg-gray-100 transition">
-            <img
-              src="https://i.pravatar.cc/150?img=12"
-              alt="profile"
-              className="h-11 w-11 rounded-xl object-cover"
-            />
-
-            <div className="hidden lg:block text-left">
-              <h3 className="text-sm font-semibold text-gray-900">
-                Sales Manager
-              </h3>
-
-              <p className="text-xs text-gray-500">
-                Manager
-              </p>
-            </div>
-
-            <ChevronDown
-              size={16}
-              className="hidden lg:block text-gray-500"
-            />
-          </button> */}
+         
           <div className="flex items-center gap-3">
             <UserButton />
           </div>
