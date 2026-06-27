@@ -11,11 +11,14 @@ import {
   Phone,
   CheckCircle,
   Pencil,
-  Trash2
+  Trash2,
+  Search,
 } from "lucide-react";
 
 const Leads = () => {
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+const [filteredLeads, setFilteredLeads] = useState<any[]>([]);
 
   const [stats, setStats] = useState({
     total: 0,
@@ -40,7 +43,8 @@ const Leads = () => {
           return;
         }
 
-        setLeads(data);
+      setLeads(data);
+setFilteredLeads(data);
 
         setStats({
           total: data.length,
@@ -60,10 +64,15 @@ const Leads = () => {
   }, []);
 
   // Filter Leads
-  const filteredLeads = statusFilter
-    ? leads.filter((lead) => lead.status === statusFilter)
-    : leads;
+  // const filteredLeads = statusFilter
+  //   ? leads.filter((lead) => lead.status === statusFilter)
+  //   : leads;
 
+    const displayedLeads = statusFilter
+  ? filteredLeads.filter(
+      (lead) => lead.status === statusFilter
+    )
+  : filteredLeads;
   const cards = [
     {
       title: "Total Leads",
@@ -147,155 +156,247 @@ const Leads = () => {
       alert("Something went wrong");
     }
   };
+return (
+  <PageLayout
+    title="Leads"
+    description="Manage all your customer leads."
+  >
+    {/* Top Section */}
 
-  return (
-    <PageLayout title="Leads" description="Manage all your customer leads.">
-      {/* Top Buttons */}
-
-      <div className="flex justify-between items-center mb-6">
-        {statusFilter ? (
-          <Link
-            href="/dashboard/leads"
-            className="text-blue-600 hover:underline font-medium"
-          >
-            ← Show All Leads
-          </Link>
-        ) : (
-          <div></div>
-        )}
-
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+      {statusFilter ? (
         <Link
-          href="/dashboard/add-lead"
-          className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-xl flex items-center gap-2"
+          href="/dashboard/leads"
+          className="text-blue-600 font-medium hover:underline"
         >
-          <Plus size={18} />
-          Add Lead
+          ← Show All Leads
         </Link>
-      </div>
+      ) : (
+        <div />
+      )}
 
-      {/* Cards */}
+      <Link
+        href="/dashboard/add-lead"
+        className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 font-medium text-white transition hover:bg-blue-700 hover:shadow-lg"
+      >
+        <Plus size={18} />
+        Add Lead
+      </Link>
+    </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
-        {cards.map((card) => {
-          const Icon = card.icon;
+    {/* Stats Cards */}
 
-          return (
-            <div
-              key={card.title}
-              className="bg-white rounded-2xl shadow border p-6"
-            >
-              <div className="flex justify-between items-center">
-                <div>
-                  <p className="text-gray-500">{card.title}</p>
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+      {cards.map((card) => {
+        const Icon = card.icon;
 
-                  <h1 className="text-4xl font-bold mt-2">
-                    {loading ? "--" : card.value}
-                  </h1>
-                </div>
+        return (
+          <div
+            key={card.title}
+            className="bg-white rounded-2xl border shadow-sm hover:shadow-md transition-all duration-300 p-5 sm:p-6"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500">
+                  {card.title}
+                </p>
 
-                <div className={`${card.bg} p-3 rounded-full`}>
-                  <Icon className={card.color} size={28} />
-                </div>
+                <h2 className="mt-2 text-3xl sm:text-4xl font-bold text-gray-800">
+                  {loading ? "--" : card.value}
+                </h2>
+              </div>
+
+              <div className={`${card.bg} rounded-full p-3`}>
+                <Icon
+                  className={card.color}
+                  size={28}
+                />
               </div>
             </div>
-          );
-        })}
+          </div>
+        );
+      })}
+    </div>
+
+    {/* Search */}
+
+<div className="mb-6">
+
+  <div className="relative">
+
+    <Search
+      size={18}
+      className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+    />
+
+    <input
+      type="text"
+      placeholder="Search by name, phone, email, company..."
+      value={search}
+      onChange={(e) => {
+        const value = e.target.value;
+
+        setSearch(value);
+
+        const result = leads.filter((lead) =>
+          `${lead.name} ${lead.email} ${lead.phone} ${lead.company} ${lead.status}`
+            .toLowerCase()
+            .includes(value.toLowerCase())
+        );
+
+        setFilteredLeads(result);
+      }}
+      className="w-full rounded-2xl border bg-white py-3 pl-11 pr-10 shadow-sm focus:border-blue-500 focus:outline-none"
+    />
+
+    {search && (
+      <button
+        onClick={() => {
+          setSearch("");
+          setFilteredLeads(leads);
+        }}
+        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-red-500"
+      >
+        ✕
+      </button>
+    )}
+
+  </div>
+
+</div>
+
+    {/* Leads Table */}
+
+    <div className="overflow-hidden rounded-2xl border bg-white shadow-sm">
+      <div className="border-b px-6 py-5">
+        <h2 className="text-xl font-semibold text-gray-800">
+          {statusFilter
+            ? `${statusFilter} Leads`
+            : "All Leads"}
+        </h2>
       </div>
 
-      {/* Table */}
+      <div className="w-full overflow-x-auto rounded-b-2xl">
+        <table className="min-w-[900px] w-full">
+          <thead className="bg-gray-50 border-b">
+            <tr>
+              <th className="px-4 py-4 text-left text-sm font-semibold text-gray-600">
+                Name
+              </th>
 
-      <div className="bg-white rounded-2xl shadow border overflow-hidden">
-        <div className="px-6 py-5 border-b">
-          <h2 className="text-xl font-semibold">
-            {statusFilter ? `${statusFilter} Leads` : "All Leads"}
-          </h2>
-        </div>
+              <th className="px-4 py-4 text-left text-sm font-semibold text-gray-600">
+                Phone
+              </th>
 
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-100">
+              <th className="px-4 py-4 text-left text-sm font-semibold text-gray-600">
+                Email
+              </th>
+
+              <th className="px-4 py-4 text-left text-sm font-semibold text-gray-600">
+                Company
+              </th>
+
+              <th className="px-4 py-4 text-left text-sm font-semibold text-gray-600">
+                Status
+              </th>
+
+              <th className="px-4 py-4 text-left text-sm font-semibold text-gray-600">
+                Created
+              </th>
+
+              <th className="px-4 py-4 text-center text-sm font-semibold text-gray-600">
+                Actions
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {loading ? (
               <tr>
-                <th className="p-4 text-left">Name</th>
-                <th className="p-4 text-left">Phone</th>
-                <th className="p-4 text-left">Email</th>
-                <th className="p-4 text-left">Company</th>
-                <th className="p-4 text-left">Status</th>
-                <th className="p-4 text-left">Created</th>
-                <th className="p-4 text-center">Actions</th>
+                <td
+                  colSpan={7}
+                  className="py-16 text-center text-gray-500"
+                >
+                  Loading Leads...
+                </td>
               </tr>
-            </thead>
-
-            <tbody>
-              {loading ? (
-                <tr>
-                  <td colSpan={7} className="text-center py-12">
-                    Loading Leads...
+            ) : displayedLeads.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={7}
+                  className="py-16 text-center text-gray-500"
+                >
+                  No Leads Found
+                </td>
+              </tr>
+            ) : (
+              displayedLeads.map((lead) => (
+                <tr
+                  key={lead.id}
+                  className="border-b transition-colors hover:bg-blue-50"
+                >
+                  <td className="px-4 py-3 font-medium whitespace-nowrap">
+                    {lead.name}
                   </td>
-                </tr>
-              ) : filteredLeads.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="text-center py-12 text-gray-500">
-                    No Leads Found
+
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    {lead.phone}
                   </td>
-                </tr>
-              ) : (
-                filteredLeads.map((lead) => (
-                  <tr
-                    key={lead.id}
-                    className="border-t hover:bg-gray-50 transition"
-                  >
-                    <td className="p-4 font-medium">{lead.name}</td>
 
-                    <td className="p-4">{lead.phone}</td>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    {lead.email}
+                  </td>
 
-                    <td className="p-4">{lead.email}</td>
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    {lead.company || "-"}
+                  </td>
 
-                    <td className="p-4">{lead.company || "-"}</td>
+                  <td className="px-4 py-3">
+                    <span
+                      className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${getStatusStyle(
+                        lead.status
+                      )}`}
+                    >
+                      {lead.status}
+                    </span>
+                  </td>
 
-                    <td className="p-4">
-                      <span
-                        className={`px-3 py-1 rounded-lg text-sm font-medium ${getStatusStyle(
-                          lead.status
-                        )}`}
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    {new Date(
+                      lead.createdAt
+                    ).toLocaleDateString()}
+                  </td>
+
+                  <td className="px-4 py-3">
+                    <div className="flex items-center justify-center gap-4">
+                      <Link
+                        href={`/dashboard/edit-lead/${lead.id}`}
+                        className="text-green-600 transition hover:text-green-800"
+                        title="Edit Lead"
                       >
-                        {lead.status}
-                      </span>
-                    </td>
+                        <Pencil size={18} />
+                      </Link>
 
-                    <td className="p-4">
-                      {new Date(lead.createdAt).toLocaleDateString()}
-                    </td>
-
-                    <td className="p-4">
-                      <div className="flex justify-center items-center gap-5">
-                        {/* Edit */}
-                        <Link
-                          href={`/dashboard/edit-lead/${lead.id}`}
-                          className="text-green-600 hover:text-green-800"
-                          title="Edit Lead"
-                        >
-                          <Pencil size={18} />
-                        </Link>
-
-                        {/* Delete */}
-                        <button
-                          onClick={() => handleDelete(lead.id)}
-                          className="text-red-600 hover:text-red-800"
-                          title="Delete Lead"
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+                      <button
+                        onClick={() =>
+                          handleDelete(lead.id)
+                        }
+                        className="text-red-600 transition hover:text-red-800"
+                        title="Delete Lead"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
       </div>
-    </PageLayout>
-  );
+    </div>
+  </PageLayout>
+);
 };
 
 export default Leads;
