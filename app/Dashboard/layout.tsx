@@ -1,7 +1,6 @@
-import { ReactNode } from "react";
-import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
+"use client";
 
+import { ReactNode, useState } from "react";
 import SideBar from "../component/dashboard/SideBar";
 import Navbar from "../component/dashboard/Navbar";
 
@@ -9,21 +8,23 @@ interface DashboardLayoutProps {
   children: ReactNode;
 }
 
-const DashboardLayout = async ({
+export default function DashboardLayout({
   children,
-}: DashboardLayoutProps) => {
-  const { userId } = await auth();
-
-  if (!userId) {
-    redirect("/sign-in");
-  }
+}: DashboardLayoutProps) {
+  const [open, setOpen] = useState(false);
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      <SideBar />
+      <SideBar
+        open={open}
+        setOpen={setOpen}
+      />
 
       <div className="flex-1 lg:ml-64">
-        <Navbar />
+        <Navbar
+          open={open}
+          setOpen={setOpen}
+        />
 
         <main className="p-6">
           {children}
@@ -31,6 +32,4 @@ const DashboardLayout = async ({
       </div>
     </div>
   );
-};
-
-export default DashboardLayout;
+}
